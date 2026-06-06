@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* CSS Core Properties supporting fluid transitions */
+        /* Modern Color Properties supporting glassmorphism and theme shifting */
         [data-theme="dark"] {
             --bg-main: #09090b;
             --bg-sidebar: #0c0c0e;
@@ -63,7 +63,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Navigation Layout with Glassmorphic Elements */
+        /* Fluid Left Sticky Sidebar Navigation */
         aside {
             position: fixed;
             top: 0;
@@ -83,8 +83,14 @@
         .sidebar-top {
             display: flex;
             flex-direction: column;
-            gap: 2.5rem;
+            gap: 2.2rem;
+            overflow-y: auto;
+            padding-right: 0.25rem;
         }
+
+        /* Minimalist scrollbar for long side navigation tracks */
+        .sidebar-top::-webkit-scrollbar { width: 4px; }
+        .sidebar-top::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
         .logo-area {
             display: flex;
@@ -122,7 +128,7 @@
             padding-left: 0.5rem;
         }
 
-        /* High-Polish Elastic Sidebar Hover Links */
+        /* Magnetic Elastic Micro-Animations */
         .nav-link {
             display: flex;
             align-items: center;
@@ -157,9 +163,9 @@
         .sidebar-footer {
             border-top: 1px solid var(--border);
             padding-top: 1.5rem;
+            background-color: var(--bg-sidebar);
         }
 
-        /* Animated Theme Toggle Button */
         .theme-toggle-btn {
             display: flex;
             align-items: center;
@@ -189,7 +195,7 @@
             gap: 0.65rem;
         }
 
-        /* Documentation Block Containers */
+        /* Documentation Layout Flow */
         main {
             margin-left: 280px;
             flex-grow: 1;
@@ -229,6 +235,15 @@
             gap: 0.75rem;
         }
 
+        h3 {
+            font-size: 1.25rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
         p {
             font-size: 1.05rem;
             line-height: 1.75;
@@ -236,7 +251,6 @@
             margin-bottom: 1.75rem;
         }
 
-        /* Modernized Interactive Info Callouts */
         .callout {
             background-color: var(--callout-bg);
             border: 1px solid var(--border);
@@ -247,7 +261,6 @@
             display: flex;
             gap: 1.15rem;
             align-items: flex-start;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
             transition: transform 0.3s ease;
         }
 
@@ -267,7 +280,7 @@
             color: var(--text-main);
         }
 
-        /* Premium Custom SVG File Tree Component */
+        /* SVG File Tree Graphics Structure */
         .file-tree {
             background-color: var(--code-bg);
             border: 1px solid var(--border);
@@ -277,7 +290,6 @@
             font-size: 0.95rem;
             margin: 2rem 0;
             box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
-            transition: background-color 0.4s ease, border-color 0.4s ease;
         }
 
         .tree-item {
@@ -296,18 +308,12 @@
             margin-left: 1.25rem;
             padding-left: 1.15rem;
             border-left: 1px solid var(--tree-line);
-            transition: border-color 0.4s ease;
         }
 
         .tree-icon {
             width: 18px;
             height: 18px;
             color: var(--text-muted);
-            transition: color 0.3s ease;
-        }
-
-        .tree-item:hover .tree-icon {
-            color: var(--text-main);
         }
 
         .tree-icon.core { color: var(--accent); }
@@ -324,15 +330,14 @@
             opacity: 0.8;
         }
 
-        /* Code Block Copy-Paste Visual Wrappers */
+        /* Code Block Copy Layout containers */
         pre {
             background-color: var(--code-bg);
             border: 1px solid var(--border);
             padding: 1.75rem;
             border-radius: 12px;
             overflow-x: auto;
-            margin: 2rem 0;
-            transition: background-color 0.4s ease, border-color 0.4s ease;
+            margin: 1.5rem 0 2.5rem 0;
         }
 
         code {
@@ -349,7 +354,6 @@
             border-radius: 6px;
             font-size: 0.9rem;
             color: var(--inline-color);
-            transition: background-color 0.4s ease;
         }
 
         ul {
@@ -373,6 +377,7 @@
 </head>
 <body>
 
+    <!-- Responsive Sidebar Track Navigation -->
     <aside>
         <div class="sidebar-top">
             <div class="logo-area" onclick="window.scrollTo(0,0)">
@@ -380,7 +385,7 @@
                 <span>Feather Docs</span>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div style="display: flex; flex-direction: column; gap: 1.85rem;">
                 <nav class="nav-group">
                     <h4>Getting Started</h4>
                     <a href="#introduction" class="nav-link active" onclick="setActiveLink(this)"><i data-lucide="book-open"></i> Introduction</a>
@@ -388,9 +393,18 @@
                 </nav>
 
                 <nav class="nav-group">
-                    <h4>Core API</h4>
-                    <a href="#controllers" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="terminal"></i> Controllers</a>
+                    <h4>Core API Engine</h4>
+                    <a href="#services" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="shield"></i> Server Services</a>
+                    <a href="#controllers" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="terminal"></i> Client Controllers</a>
                     <a href="#lifecycle" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="hourglass"></i> Lifecycle Hooks</a>
+                </nav>
+
+                <nav class="nav-group">
+                    <h4>Built-in Packages</h4>
+                    <a href="#pkg-spring" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="activity"></i> FeatherSpring</a>
+                    <a href="#pkg-cleanup" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="trash-2"></i> FeatherCleanup</a>
+                    <a href="#pkg-signal" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="zap"></i> FeatherSignal</a>
+                    <a href="#pkg-net" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="network"></i> FeatherNet</a>
                 </nav>
             </div>
         </div>
@@ -406,21 +420,23 @@
         </div>
     </aside>
 
+    <!-- Main Content Documentation Output -->
     <main>
         <section id="introduction">
             <h1>Feather Framework</h1>
-            <p>Feather is a lightweight modular architecture tailored for performance-critical games. By enforcing clean initialization pipelines and rigid type guards, it minimizes framework footprint while keeping client-server communication fast and structural tracking instantaneous.</p>
+            <p>Feather is a lightweight, ultra-high performance modular architecture tailored for production-scale Roblox game environments. By enforcing clean initialization pipelines and strict type safety layouts, it eliminates cyclic dependencies and provides instant response times under heavy simulation load.</p>
             
             <div class="callout">
                 <i data-lucide="sparkles"></i>
-                <p><strong>Strict Type Safety Execution:</strong> Feather operates flawlessly inside strict environments (<code>--!strict</code>). Declaring explicitly mapped custom structural shapes prevents interface typing bugs before your framework compiler initializes modules.</p>
+                <p><strong>Strict Type Safety Execution:</strong> Feather operates flawlessly inside strict environments (<code>--!strict</code>). Declaring explicitly mapped custom structural shapes prevents runtime mapping interface bugs before your framework compiler initializes modules.</p>
             </div>
         </section>
 
         <section id="architecture">
             <h2><i data-lucide="folder-git-2"></i> File Tree Structure</h2>
-            <p>To avoid cyclic dependency problems, drop your framework module straight into the baseline root folder of your project assets, keeping your helper packages clean and isolated.</p>
+            <p>Drop the core framework engine straight into your shared project root folder to cleanly manage modular server logic, client logic, and auxiliary drivers safely.</p>
             
+            <!-- Complete High-Polish Built-out Tree Structure Graphic Component -->
             <div class="file-tree">
                 <div class="tree-item">
                     <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
@@ -440,21 +456,58 @@
                         <div class="tree-item">
                             <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             <span class="item-name">FeatherSpring</span>
-                            <span class="item-comment">— Smooth Physics Elastic Interpolation Driver</span>
+                            <span class="item-comment">— Physics-based Linear Spring Interpolation Driver</span>
                         </div>
                         <div class="tree-item">
                             <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             <span class="item-name">FeatherCleanup</span>
-                            <span class="item-comment">— Memory Tracking & Thread Garbage Collector</span>
+                            <span class="item-comment">— High-Performance Garbage Collector Tracker</span>
+                        </div>
+                        <div class="tree-item">
+                            <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span class="item-name">FeatherSignal</span>
+                            <span class="item-comment">— High-Speed Custom Event Dispatcher Utility</span>
+                        </div>
+                        <div class="tree-item">
+                            <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span class="item-name">FeatherNet</span>
+                            <span class="item-comment">— Fast Networking and Client-Server Bridge Layer</span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <section id="services">
+            <h2><i data-lucide="shield"></i> Server Services</h2>
+            <p>Services manage server-side singleton modules and runtime tasks. Use explicit type declarations to handle database updates, matchmaking networks, and system tracking.</p>
+            
+            <pre><code>--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Feather = require(ReplicatedStorage.Feather)
+
+export type DataServiceType = {
+    Client: {},
+    featherInit: (self: any) -> (),
+    featherStart: (self: any) -> (),
+}
+
+local DataService = { Client = {} } :: DataServiceType
+
+function DataService:featherInit()
+    print("🔒 [DataService]: Instantiating data structures...")
+end
+
+function DataService:featherStart()
+    print("🚀 [DataService]: Data operational pipeline listening!")
+end
+
+return Feather.CreateService(DataService)</code></pre>
+        </section>
+
         <section id="controllers">
-            <h2><i data-lucide="terminal"></i> Building Controllers</h2>
-            <p>Controllers serve as your execution controllers across game operations. They are declared cleanly and automatically returned dynamically via registration framework wrappers.</p>
+            <h2><i data-lucide="terminal"></i> Client Controllers</h2>
+            <p>Controllers isolate client logic execution boundaries. They compile instantly and return via framework wrappers dynamically.</p>
             
             <pre><code>--!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -468,11 +521,11 @@ export type TestControllerType = {
 local TestController = {} :: TestControllerType
 
 function TestController:featherInit()
-    print("⚙️ [TestController]: Running pre-init sequences...")
+    print("⚙️ [TestController]: Allocating micro-setting buffers...")
 end
 
 function TestController:featherStart()
-    print("🚀 [TestController]: Initial startup confirmed!")
+    print("🚀 [TestController]: Main client execution tracking active!")
 end
 
 return Feather.CreateController(TestController)</code></pre>
@@ -480,19 +533,59 @@ return Feather.CreateController(TestController)</code></pre>
 
         <section id="lifecycle">
             <h2><i data-lucide="hourglass"></i> Framework Lifecycle Hooks</h2>
-            <p>Feather looks for specific camelCase layout method pointers inside your modules to cleanly step through startup phases sequentially:</p>
+            <p>Feather drives step-by-step initialization loops sequentially using internal camelCase hooks:</p>
             <ul>
-                <li><code>featherInit()</code> — Fires instantly when the controller is processed. Ideal for micro-setting allocations, baseline memory configs, and utility setups.</li>
-                <li><code>featherStart()</code> — Fires once every registration block and networking loop has resolved. Safe for multi-threaded setups, server queries, and active connection patterns.</li>
+                <li><code>featherInit()</code> — Fires synchronously when the module is processed. Safe for settings allocations, memory configs, and utility maps.</li>
+                <li><code>featherStart()</code> — Fires once every module registration block has cleared safely. Optimized for active connections and networking queries.</li>
             </ul>
+        </section>
+
+        <section id="pkg-spring">
+            <h2><i data-lucide="activity"></i> FeatherSpring</h2>
+            <p>A completely customized, high-precision linear vector spring solver module. Built explicitly to drive physical interpolation pipelines, UI/UX liquid motions, and reactive screen shaking effects instantly.</p>
+            <pre><code>local FeatherSpring = require(ReplicatedStorage.Packages.FeatherSpring)
+
+local elasticSpring = FeatherSpring.new(1, 40, 4, 0) -- Target, Speed, Damper, Velocity
+elasticSpring:Update(deltaTime)</code></pre>
+        </section>
+
+        <section id="pkg-cleanup">
+            <h2><i data-lucide="trash-2"></i> FeatherCleanup</h2>
+            <p>A fast tracker object engineered to clean up complex connections and track items to prevent memory leaks across temporary data structures.</p>
+            <pre><code>local FeatherCleanup = require(ReplicatedStorage.Packages.FeatherCleanup)
+local Janitor = FeatherCleanup.new()
+
+Janitor:Add(workspace.Part, "Destroy")
+Janitor:Clean() -- Safely dumps garbage collection elements instantly</code></pre>
+        </section>
+
+        <section id="pkg-signal">
+            <h2><i data-lucide="zap"></i> FeatherSignal</h2>
+            <p>An execution event architecture that replaces slow bindable objects. It handles thread management inside multi-threaded micro-tasks perfectly.</p>
+            <pre><code>local FeatherSignal = require(ReplicatedStorage.Packages.FeatherSignal)
+local onAbilityUsed = FeatherSignal.new()
+
+onAbilityUsed:Connect(function(abilityName)
+    print("Casted skill:", abilityName)
+end)</code></pre>
+        </section>
+
+        <section id="pkg-net">
+            <h2><i data-lucide="network"></i> FeatherNet</h2>
+            <p>An optimized communication layer routing structural commands across the network border cleanly. Includes micro-serialization handling to keep bandwidth tight.</p>
+            <pre><code>local FeatherNet = require(ReplicatedStorage.Packages.FeatherNet)
+
+-- Server Side Event Setup
+local ReliableRemote = FeatherNet.CreateEvent("ReliableRemote")
+ReliableRemote:FireAllClients("MatchStart")</code></pre>
         </section>
     </main>
 
     <script>
-        // Mount crisp wireframe icons
+        // Mount Wireframe Icons
         lucide.createIcons();
 
-        // High-Polish System Theme Switcher
+        // High-Polish Dynamic Theming Control
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -501,7 +594,7 @@ return Feather.CreateController(TestController)</code></pre>
 
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('feather-docs-theme', theme);
+            localStorage.setItem('feather-expanded-theme', theme);
             
             const icon = document.getElementById('theme-icon');
             const text = document.getElementById('theme-text');
@@ -516,11 +609,11 @@ return Feather.CreateController(TestController)</code></pre>
             lucide.createIcons();
         }
 
-        // Cache browser config choice across sessions
-        const savedTheme = localStorage.getItem('feather-docs-theme') || 'dark';
+        // Apply theme on load
+        const savedTheme = localStorage.getItem('feather-expanded-theme') || 'dark';
         applyTheme(savedTheme);
 
-        // Class toggler for navigation highlight states
+        // Sidebar link class highlighting
         function setActiveLink(element) {
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
