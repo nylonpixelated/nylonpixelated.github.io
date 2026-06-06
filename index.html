@@ -235,15 +235,6 @@
             gap: 0.75rem;
         }
 
-        h3 {
-            font-size: 1.25rem;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-main);
-        }
-
         p {
             font-size: 1.05rem;
             line-height: 1.75;
@@ -330,7 +321,7 @@
             opacity: 0.8;
         }
 
-        /* Code Block Copy Layout containers */
+        /* Code Block Layout Containers */
         pre {
             background-color: var(--code-bg);
             border: 1px solid var(--border);
@@ -495,11 +486,11 @@ export type DataServiceType = {
 local DataService = { Client = {} } :: DataServiceType
 
 function DataService:featherInit()
-    print("🔒 [DataService]: Instantiating data structures...")
+    print("🔒 [DataService]: Initializing DataService...")
 end
 
 function DataService:featherStart()
-    print("🚀 [DataService]: Data operational pipeline listening!")
+    print("🚀 [DataService]: Listening for data updates!")
 end
 
 return Feather.CreateService(DataService)</code></pre>
@@ -535,8 +526,8 @@ return Feather.CreateController(TestController)</code></pre>
             <h2><i data-lucide="hourglass"></i> Framework Lifecycle Hooks</h2>
             <p>Feather drives step-by-step initialization loops sequentially using internal camelCase hooks:</p>
             <ul>
-                <li><code>featherInit()</code> — Fires synchronously when the module is processed. Safe for settings allocations, memory configs, and utility maps.</li>
-                <li><code>featherStart()</code> — Fires once every module registration block has cleared safely. Optimized for active connections and networking queries.</li>
+                <li><code>featherInit()</code> — Fires synchronously when the module is processed. Safe for configuration adjustments, memory allocations, and variable caches.</li>
+                <li><code>featherStart()</code> — Fires once every module registration block has cleared safely. Optimized for handling active async processes, server remote mapping, and thread routines.</li>
             </ul>
         </section>
 
@@ -585,7 +576,9 @@ ReliableRemote:FireAllClients("MatchStart")</code></pre>
         // Mount Wireframe Icons
         lucide.createIcons();
 
-        // High-Polish Dynamic Theming Control
+        // ==========================================
+        // HIGH-POLISH DYNAMIC THEME ENGINE
+        // ==========================================
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -609,17 +602,51 @@ ReliableRemote:FireAllClients("MatchStart")</code></pre>
             lucide.createIcons();
         }
 
-        // Apply theme on load
+        // Apply theme choice on load
         const savedTheme = localStorage.getItem('feather-expanded-theme') || 'dark';
         applyTheme(savedTheme);
 
-        // Sidebar link class highlighting
-        function setActiveLink(element) {
-            document.querySelectorAll('.nav-link').forEach(link => {
+        // ==========================================
+        // INTERACTIVE LIQUID-MOTION SCROLL SPY
+        // ==========================================
+        const sections = document.querySelectorAll('main section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // Helper to instantly swap active highlight indicator lines
+        function updateActiveState(targetId) {
+            navLinks.forEach(link => {
                 link.classList.remove('active');
+                if (link.getAttribute('href') === `#${targetId}`) {
+                    link.classList.add('active');
+                }
             });
+        }
+
+        // Manual override function when links are directly clicked
+        function setActiveLink(element) {
+            navLinks.forEach(link => link.classList.remove('active'));
             element.classList.add('active');
         }
+
+        // Intersection Observer Configuration
+        const observerOptions = {
+            root: null, // Viewport tracking boundary defaults
+            rootMargin: '-20% 0px -60% 0px', // Sweet spot for reading layout focus updates
+            threshold: 0
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // Adjust section position marker lines fluidly on active viewport tracking
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    updateActiveState(id);
+                }
+            });
+        }, observerOptions);
+
+        // Attach layout watchers onto each documentation section block
+        sections.forEach(section => sectionObserver.observe(section));
     </script>
 </body>
 </html>
