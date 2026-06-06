@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Modern Color Properties supporting glassmorphism and theme shifting */
+        /* Color Properties */
         [data-theme="dark"] {
             --bg-main: #09090b;
             --bg-sidebar: #0c0c0e;
@@ -63,7 +63,6 @@
             min-height: 100vh;
         }
 
-        /* Fluid Left Sticky Sidebar Navigation */
         aside {
             position: fixed;
             top: 0;
@@ -195,7 +194,6 @@
             gap: 0.65rem;
         }
 
-        /* Documentation Layout Flow */
         main {
             margin-left: 280px;
             flex-grow: 1;
@@ -271,7 +269,6 @@
             color: var(--text-main);
         }
 
-        /* SVG File Tree Graphics Structure */
         .file-tree {
             background-color: var(--code-bg);
             border: 1px solid var(--border);
@@ -384,7 +381,7 @@
                 </nav>
 
                 <nav class="nav-group">
-                    <h4>Core API Engine</h4>
+                    <h4>Feather API</h4>
                     <a href="#services" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="shield"></i> Server Services</a>
                     <a href="#controllers" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="terminal"></i> Client Controllers</a>
                     <a href="#lifecycle" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="hourglass"></i> Lifecycle Hooks</a>
@@ -415,7 +412,7 @@
     <main>
         <section id="introduction">
             <h1>Feather Framework</h1>
-            <p>Feather is a lightweight, ultra-high performance modular architecture tailored for production-scale Roblox game environments. By enforcing clean initialization pipelines and strict type safety layouts, it eliminates cyclic dependencies and provides instant response times under heavy simulation load.</p>
+            <p>Feather is a lightweight, performance-based modular architecture tailored for production-scale Roblox game environments. By enforcing clean initialization pipelines and strict type safety layouts, it eliminates cyclic dependencies and provides instant response times under heavy simulation load.</p>
             
             <div class="callout">
                 <i data-lucide="sparkles"></i>
