@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feather Framework Docs</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z'%3E%3C/path%3E%3Cline x1='16' y1='8' x2='2' y2='22'%3E%3C/line%3E%3Cline x1='17.5' y1='15' x2='9' y2='15'%3E%3C/line%3E%3C/svg%3E">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Color Properties */
+        /* Modern Color Properties supporting glassmorphism and theme shifting */
         [data-theme="dark"] {
             --bg-main: #09090b;
             --bg-sidebar: #0c0c0e;
@@ -63,6 +66,7 @@
             min-height: 100vh;
         }
 
+        /* Fluid Left Sticky Sidebar Navigation */
         aside {
             position: fixed;
             top: 0;
@@ -194,6 +198,7 @@
             gap: 0.65rem;
         }
 
+        /* Documentation Layout Flow */
         main {
             margin-left: 280px;
             flex-grow: 1;
@@ -269,6 +274,7 @@
             color: var(--text-main);
         }
 
+        /* SVG File Tree Graphics Structure */
         .file-tree {
             background-color: var(--code-bg);
             border: 1px solid var(--border);
@@ -365,7 +371,6 @@
 </head>
 <body>
 
-    <!-- Responsive Sidebar Track Navigation -->
     <aside>
         <div class="sidebar-top">
             <div class="logo-area" onclick="window.scrollTo(0,0)">
@@ -381,7 +386,7 @@
                 </nav>
 
                 <nav class="nav-group">
-                    <h4>Feather API</h4>
+                    <h4>Core API Engine</h4>
                     <a href="#services" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="shield"></i> Server Services</a>
                     <a href="#controllers" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="terminal"></i> Client Controllers</a>
                     <a href="#lifecycle" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="hourglass"></i> Lifecycle Hooks</a>
@@ -408,11 +413,10 @@
         </div>
     </aside>
 
-    <!-- Main Content Documentation Output -->
     <main>
         <section id="introduction">
             <h1>Feather Framework</h1>
-            <p>Feather is a lightweight, performance-based modular architecture tailored for production-scale Roblox game environments. By enforcing clean initialization pipelines and strict type safety layouts, it eliminates cyclic dependencies and provides instant response times under heavy simulation load.</p>
+            <p>Feather is a lightweight, ultra-high performance modular architecture tailored for production-scale Roblox game environments. By enforcing clean initialization pipelines and strict type safety layouts, it eliminates cyclic dependencies and provides instant response times under heavy simulation load.</p>
             
             <div class="callout">
                 <i data-lucide="sparkles"></i>
@@ -424,7 +428,6 @@
             <h2><i data-lucide="folder-git-2"></i> File Tree Structure</h2>
             <p>Drop the core framework engine straight into your shared project root folder to cleanly manage modular server logic, client logic, and auxiliary drivers safely.</p>
             
-            <!-- Complete High-Polish Built-out Tree Structure Graphic Component -->
             <div class="file-tree">
                 <div class="tree-item">
                     <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
@@ -483,11 +486,11 @@ export type DataServiceType = {
 local DataService = { Client = {} } :: DataServiceType
 
 function DataService:featherInit()
-    print("🔒 [DataService]: Initializing DataService...")
+    print("🔒 [DataService]: Instantiating data structures...")
 end
 
 function DataService:featherStart()
-    print("🚀 [DataService]: Listening for data updates!")
+    print("🚀 [DataService]: Data operational pipeline listening!")
 end
 
 return Feather.CreateService(DataService)</code></pre>
