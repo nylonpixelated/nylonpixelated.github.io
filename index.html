@@ -1,29 +1,532 @@
-<div class="file-tree">
-    <div class="tree-item">
-        <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
-        <span class="folder-name">ReplicatedStorage</span>
-    </div>
-    <div class="tree-children">
-        <div class="tree-item">
-            <svg class="tree-icon core" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
-            <span class="item-name highlight">Feather</span>
-            <span class="item-comment">— Main Core Engine</span>
-        </div>
-        <div class="tree-item">
-            <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
-            <span class="folder-name">Packages</span>
-        </div>
-        <div class="tree-children">
-            <div class="tree-item">
-                <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span class="item-name">FeatherSpring</span>
-                <span class="item-comment">— Smooth Interpolation Drivers</span>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feather Framework Docs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* CSS Core Properties supporting fluid transitions */
+        [data-theme="dark"] {
+            --bg-main: #09090b;
+            --bg-sidebar: #0c0c0e;
+            --border: #1f1f23;
+            --text-main: #fafafa;
+            --text-muted: #82828c;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.12);
+            --code-bg: #121214;
+            --code-inline: #1f1f23;
+            --inline-color: #f43f5e;
+            --callout-bg: rgba(24, 24, 27, 0.6);
+            --sidebar-active: #18181b;
+            --tree-line: #27272a;
+            --tree-script: #10b981;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #ffffff;
+            --bg-sidebar: #f9f9fb;
+            --border: #e4e4e7;
+            --text-main: #09090b;
+            --text-muted: #71717a;
+            --accent: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.08);
+            --code-bg: #f4f4f5;
+            --code-inline: #e4e4e7;
+            --inline-color: #be123c;
+            --callout-bg: rgba(250, 250, 250, 0.9);
+            --sidebar-active: #e4e4e7;
+            --tree-line: #d4d4d8;
+            --tree-script: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation Layout with Glassmorphic Elements */
+        aside {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 280px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 2.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.35rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            cursor: pointer;
+        }
+
+        .logo-area i {
+            color: var(--accent);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logo-area:hover i {
+            transform: rotate(15deg) scale(1.15);
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .nav-group h4 {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.65rem;
+            padding-left: 0.5rem;
+        }
+
+        /* High-Polish Elastic Sidebar Hover Links */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.65rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-main);
+            background-color: var(--sidebar-active);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 25%;
+            height: 50%;
+            width: 3px;
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+
+        /* Animated Theme Toggle Button */
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.75rem 1.15rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--sidebar-active);
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        .theme-icon-container {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        /* Documentation Block Containers */
+        main {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 5rem 8% 6rem 8%;
+            max-width: 1200px;
+        }
+
+        section {
+            padding-bottom: 4rem;
+            margin-bottom: 4rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.85rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.75;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+        }
+
+        /* Modernized Interactive Info Callouts */
+        .callout {
+            background-color: var(--callout-bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 1.35rem 1.65rem;
+            border-radius: 8px;
+            margin: 2.25rem 0;
+            display: flex;
+            gap: 1.15rem;
+            align-items: flex-start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease;
+        }
+
+        .callout:hover {
+            transform: scale(1.01);
+        }
+
+        .callout i {
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+        }
+
+        .callout p {
+            margin-bottom: 0;
+            font-size: 0.98rem;
+            color: var(--text-main);
+        }
+
+        /* Premium Custom SVG File Tree Component */
+        .file-tree {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            margin: 2rem 0;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.4rem 0;
+            transition: transform 0.2s ease;
+        }
+
+        .tree-item:hover {
+            transform: translateX(4px);
+        }
+
+        .tree-children {
+            margin-left: 1.25rem;
+            padding-left: 1.15rem;
+            border-left: 1px solid var(--tree-line);
+            transition: border-color 0.4s ease;
+        }
+
+        .tree-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .tree-item:hover .tree-icon {
+            color: var(--text-main);
+        }
+
+        .tree-icon.core { color: var(--accent); }
+        .tree-icon.script { color: var(--tree-script); }
+
+        .folder-name { font-weight: 600; color: var(--text-main); }
+        .item-name { color: var(--text-main); }
+        .item-name.highlight { font-weight: 600; }
+        
+        .item-comment {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-left: 0.65rem;
+            opacity: 0.8;
+        }
+
+        /* Code Block Copy-Paste Visual Wrappers */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 2rem 0;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--text-main);
+        }
+
+        p code, li code {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--code-inline);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--inline-color);
+            transition: background-color 0.4s ease;
+        }
+
+        ul {
+            margin-left: 1.75rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        li::marker {
+            color: var(--accent);
+        }
+
+        @media (max-width: 960px) {
+            aside { display: none; }
+            main { margin-left: 0; padding: 4rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="sidebar-top">
+            <div class="logo-area" onclick="window.scrollTo(0,0)">
+                <i data-lucide="feather"></i>
+                <span>Feather Docs</span>
             </div>
-            <div class="tree-item">
-                <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span class="item-name">FeatherCleanup</span>
-                <span class="item-comment">— GC Instance Tracking Tools</span>
+            
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <nav class="nav-group">
+                    <h4>Getting Started</h4>
+                    <a href="#introduction" class="nav-link active" onclick="setActiveLink(this)"><i data-lucide="book-open"></i> Introduction</a>
+                    <a href="#architecture" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="folder-git-2"></i> Architecture</a>
+                </nav>
+
+                <nav class="nav-group">
+                    <h4>Core API</h4>
+                    <a href="#controllers" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="terminal"></i> Controllers</a>
+                    <a href="#lifecycle" class="nav-link" onclick="setActiveLink(this)"><i data-lucide="hourglass"></i> Lifecycle Hooks</a>
+                </nav>
             </div>
         </div>
-    </div>
-</div>
+
+        <div class="sidebar-footer">
+            <button class="theme-toggle-btn" onclick="toggleTheme()">
+                <div class="theme-icon-container">
+                    <i id="theme-icon" data-lucide="moon"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </div>
+                <i data-lucide="chevrons-up-down" style="width: 14px; opacity: 0.4;"></i>
+            </button>
+        </div>
+    </aside>
+
+    <main>
+        <section id="introduction">
+            <h1>Feather Framework</h1>
+            <p>Feather is a lightweight modular architecture tailored for performance-critical games. By enforcing clean initialization pipelines and rigid type guards, it minimizes framework footprint while keeping client-server communication fast and structural tracking instantaneous.</p>
+            
+            <div class="callout">
+                <i data-lucide="sparkles"></i>
+                <p><strong>Strict Type Safety Execution:</strong> Feather operates flawlessly inside strict environments (<code>--!strict</code>). Declaring explicitly mapped custom structural shapes prevents interface typing bugs before your framework compiler initializes modules.</p>
+            </div>
+        </section>
+
+        <section id="architecture">
+            <h2><i data-lucide="folder-git-2"></i> File Tree Structure</h2>
+            <p>To avoid cyclic dependency problems, drop your framework module straight into the baseline root folder of your project assets, keeping your helper packages clean and isolated.</p>
+            
+            <div class="file-tree">
+                <div class="tree-item">
+                    <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
+                    <span class="folder-name">ReplicatedStorage</span>
+                </div>
+                <div class="tree-children">
+                    <div class="tree-item">
+                        <svg class="tree-icon core" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
+                        <span class="item-name highlight">Feather</span>
+                        <span class="item-comment">— Main Core Engine Module</span>
+                    </div>
+                    <div class="tree-item">
+                        <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"></path></svg>
+                        <span class="folder-name">Packages</span>
+                    </div>
+                    <div class="tree-children">
+                        <div class="tree-item">
+                            <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span class="item-name">FeatherSpring</span>
+                            <span class="item-comment">— Smooth Physics Elastic Interpolation Driver</span>
+                        </div>
+                        <div class="tree-item">
+                            <svg class="tree-icon script" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span class="item-name">FeatherCleanup</span>
+                            <span class="item-comment">— Memory Tracking & Thread Garbage Collector</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="controllers">
+            <h2><i data-lucide="terminal"></i> Building Controllers</h2>
+            <p>Controllers serve as your execution controllers across game operations. They are declared cleanly and automatically returned dynamically via registration framework wrappers.</p>
+            
+            <pre><code>--!strict
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Feather = require(ReplicatedStorage.Feather)
+
+export type TestControllerType = {
+    featherInit: (self: any) -> (),
+    featherStart: (self: any) -> (),
+}
+
+local TestController = {} :: TestControllerType
+
+function TestController:featherInit()
+    print("⚙️ [TestController]: Running pre-init sequences...")
+end
+
+function TestController:featherStart()
+    print("🚀 [TestController]: Initial startup confirmed!")
+end
+
+return Feather.CreateController(TestController)</code></pre>
+        </section>
+
+        <section id="lifecycle">
+            <h2><i data-lucide="hourglass"></i> Framework Lifecycle Hooks</h2>
+            <p>Feather looks for specific camelCase layout method pointers inside your modules to cleanly step through startup phases sequentially:</p>
+            <ul>
+                <li><code>featherInit()</code> — Fires instantly when the controller is processed. Ideal for micro-setting allocations, baseline memory configs, and utility setups.</li>
+                <li><code>featherStart()</code> — Fires once every registration block and networking loop has resolved. Safe for multi-threaded setups, server queries, and active connection patterns.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        // Mount crisp wireframe icons
+        lucide.createIcons();
+
+        // High-Polish System Theme Switcher
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(targetTheme);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('feather-docs-theme', theme);
+            
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (theme === 'dark') {
+                icon.setAttribute('data-lucide', 'moon');
+                text.innerText = 'Dark Mode';
+            } else {
+                icon.setAttribute('data-lucide', 'sun');
+                text.innerText = 'Light Mode';
+            }
+            lucide.createIcons();
+        }
+
+        // Cache browser config choice across sessions
+        const savedTheme = localStorage.getItem('feather-docs-theme') || 'dark';
+        applyTheme(savedTheme);
+
+        // Class toggler for navigation highlight states
+        function setActiveLink(element) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
