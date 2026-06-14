@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feather</title>
     <style>
-        :root { --bg: #050505; --card: #111; --text: #eee; --accent: #4f46e5; }
+        :root { 
+            --bg: #050505; --card: #111; --text: #eee; --accent: #4f46e5; 
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         body { margin: 0; font-family: 'Inter', system-ui; background: var(--bg); color: var(--text); padding: 2rem; }
         .container { max-width: 900px; margin: 0 auto; }
         
@@ -15,11 +18,23 @@
         
         .section { margin-bottom: 3rem; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .card { background: var(--card); padding: 2rem; border-radius: 16px; border: 1px solid #222; }
+        
+        /* Interactive Card */
+        .card { 
+            background: var(--card); padding: 2rem; border-radius: 16px; 
+            border: 1px solid #222; transition: var(--transition);
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+        .card:hover { 
+            border-color: var(--accent); 
+            transform: translateY(-8px) scale(1.02); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(79, 70, 229, 0.2); 
+        }
         
         h2 { color: var(--accent); font-size: 1.5rem; }
         .dev-bio { font-style: italic; color: #aaa; border-left: 3px solid var(--accent); padding-left: 1rem; }
-        a { color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 1rem; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 1rem; transition: var(--transition); }
+        .card:hover a { letter-spacing: 0.05rem; }
     </style>
 </head>
 <body>
