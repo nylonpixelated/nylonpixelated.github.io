@@ -2,60 +2,75 @@
 <html lang="en">
 <head>
     <style>
-        :root { --bg: #050505; --text: #ffffff; --muted: #444; --accent: #fff; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 40px; }
+        :root { --bg: #050505; --text: #ffffff; --muted: #444; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
-        /* Navigation (Feather-Style) */
-        nav { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding-bottom: 30px; }
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: 0.3s; }
-        .nav-links a:hover { color: var(--text); }
+        /* Animated Code Background */
+        #code-bg { position: fixed; inset: 0; z-index: -1; }
         
-        /* Hire Me Button */
-        .hire-btn { border: 1px solid #fff; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; background: transparent; color: white; transition: 0.3s; }
+        .container { padding: 40px; max-width: 900px; margin: 0 auto; position: relative; }
+        
+        nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 50px; }
+        .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; margin-left: 20px; transition: 0.3s; }
+        .nav-links a:hover { color: #fff; }
+        
+        .hire-btn { border: 1px solid #fff; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; background: transparent; color: white; }
         .hire-btn:hover { background: #fff; color: #000; }
         
-        /* Hero Section */
-        .hero { padding: 100px 0; max-width: 800px; }
-        .status-pill { border: 1px solid #222; padding: 6px 16px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; display: inline-block; color: #888; }
-        h1 { font-size: 80px; letter-spacing: -4px; font-weight: 500; margin: 0; line-height: 0.9; }
-        
-        /* Project Modules */
-        .project-list { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 100px; }
-        .project-item { border-top: 1px solid #111; padding-top: 20px; }
-        .meta { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+        section { padding: 100px 0; border-top: 1px solid #111; }
+        h2 { font-size: 32px; font-weight: 300; }
+        .project-item { margin: 30px 0; }
     </style>
 </head>
 <body>
-    <nav>
-        <div style="font-weight: bold;">NYLONPIXELATED</div>
-        <div class="nav-links">
-            <a href="#about">ABOUT</a>
-            <a href="#projects">PROJECTS</a>
-            <a href="#contact">CONTACT</a>
-        </div>
-        <button class="hire-btn" onclick="window.location.href='#contact'">HIRE ME</button>
-    </nav>
+    <canvas id="code-bg"></canvas>
 
-    <div class="hero">
-        <div class="status-pill">● ARCHITECTING FEATHER FRAMEWORK</div>
-        <h1>NYLON PIXELATED.</h1>
-        <p style="color: #666; margin-top: 20px;">System Architect & Roblox Developer.</p>
+    <div class="container">
+        <nav>
+            <div style="font-weight: bold;">NYLONPIXELATED</div>
+            <div class="nav-links">
+                <a href="#about">ABOUT</a>
+                <a href="#projects">PROJECTS</a>
+                <a href="#contact">CONTACT</a>
+            </div>
+            <button class="hire-btn" onclick="window.location.href='mailto:gamingmaavis@gmail.com'">HIRE ME</button>
+        </nav>
+
+        <section id="about">
+            <h2>About</h2>
+            <p style="color: #888; line-height: 1.8;">System Architect and Roblox framework developer. Dedicated to creating high-performance, featherweight solutions that push the boundaries of engine capabilities. Focused on modular design and clean, scalable code.</p>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="project-item"><h3>Feather Framework</h3><p style="color: #666;">High-performance modular architecture.</p></div>
+            <div class="project-item"><h3>Feed a Dragon</h3><p style="color: #666;">Creature growth & management.</p></div>
+            <div class="project-item"><h3>Slime Tower Defense</h3><p style="color: #666;">Strategy & entity AI.</p></div>
+        </section>
+
+        <section id="contact">
+            <h2>Contact</h2>
+            <p style="color: #888;">Discord: .c_ade<br>Roblox: toymegalodon</p>
+        </section>
     </div>
 
-    <section id="projects" class="project-list">
-        <div class="project-item">
-            <div class="meta">001 // FRAMEWORK</div>
-            <h3>Feather</h3>
-        </div>
-        <div class="project-item">
-            <div class="meta">002 // EXPERIENCE</div>
-            <h3>Feed a Dragon</h3>
-        </div>
-        <div class="project-item">
-            <div class="meta">003 // EXPERIENCE</div>
-            <h3>Slime Tower Defense</h3>
-        </div>
-    </section>
+    <script>
+        const canvas = document.getElementById('code-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const snippets = ["local Knit = require", "RunService", "TweenService", "math.floor", "table.insert", "if hit then", "function()"];
+        let particles = Array.from({length: 20}, () => ({x: Math.random()*canvas.width, y: Math.random()*canvas.height, text: snippets[Math.floor(Math.random()*snippets.length)], speed: Math.random()*0.5}));
+        
+        function draw() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = '#111'; ctx.font = '14px monospace';
+            particles.forEach(p => {
+                ctx.fillText(p.text, p.x, p.y);
+                p.y += p.speed; if(p.y > canvas.height) p.y = 0;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
 </body>
 </html>
