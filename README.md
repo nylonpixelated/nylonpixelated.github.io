@@ -1,25 +1,22 @@
-# 🪶 Feather Framework
+## nylonpixelated.
+Hi, I'm toymegalodon (formerly krichmoney08). I'm a Roblox game developer and framework architect.
 
-Feather is an performance-based, lightweight modular architecture engineered specifically for production-scale Roblox game development. Designed as a highly optimized, lean alternative for handling heavy execution pipelines, Feather enforces strict structural type-safety and provides instantaneous runtime lifecycle tracking.
+## about
+I build high-performance, lightweight development tools and clean, functional code. I am the founder of Interactive Slime Studios and the creator of the Feather framework and the Inqustry project.
 
----
+## projects
+Feather Framework: My custom client-server bootstrapping library designed for high-performance projects.
 
-## ⚡ Core Features
+Interactive Slime Studios: Home to my game projects, Slime Tower Defense
 
-* **Strict Type Safety:** Fully optimized to operate seamlessly under Luau's strict mode checking (`--!strict`), catching structural layout mutations during compilation before runtime deployment.
-* **Blazing Fast Lifecycle Execution:** Implements deterministic, sequential boot scheduling via optimized `featherInit` and `featherStart` execution hooks.
-* **Zero Bloat Philosophy:** Keeps the memory footprint exceptionally low, making it ideal for systems requiring instant response times under heavy simulation load.
-* **Modular Dependency Isolation:** Built to cleanly decouple client controllers and server services, completely preventing cyclic dependency errors.
+Inqustry: A platform I founded to provide tools for other developers.
 
----
+Feed A Dragon: some silly game i work on in my past time
 
-## 📁 Framework Architecture
+## hiring
+i am not currently available for hire, as i only work on projects that interest me!
 
-To maintain a clean environment and prevent structural tracking issues, drop the core engine directly into your shared assets directory structure:
+## contact
+Roblox: toymegalodon (ID: 1998926676)
 
-```text
-ReplicatedStorage/
-├── Feather/                # Main Core Engine Module
-└── Packages/
-    ├── FeatherSpring/      # Physics-based Linear Spring Interpolation Driver
-    └── FeatherCleanup/     # High-Performance Instance Garbage Collector
+Discord: .c_ade
