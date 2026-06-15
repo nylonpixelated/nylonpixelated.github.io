@@ -7,14 +7,20 @@
         
         /* Navigation (Feather-Style) */
         nav { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding-bottom: 30px; }
-        .nav-links { display: flex; gap: 30px; color: var(--muted); font-size: 14px; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--text); }
         
-        /* Hero Section (Grid-aligned, Minimal) */
+        /* Hire Me Button */
+        .hire-btn { border: 1px solid #fff; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; background: transparent; color: white; transition: 0.3s; }
+        .hire-btn:hover { background: #fff; color: #000; }
+        
+        /* Hero Section */
         .hero { padding: 100px 0; max-width: 800px; }
-        .status-pill { border: 1px solid #222; padding: 6px 16px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; display: inline-block; }
+        .status-pill { border: 1px solid #222; padding: 6px 16px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; display: inline-block; color: #888; }
         h1 { font-size: 80px; letter-spacing: -4px; font-weight: 500; margin: 0; line-height: 0.9; }
         
-        /* Project Modules (System feel) */
+        /* Project Modules */
         .project-list { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 100px; }
         .project-item { border-top: 1px solid #111; padding-top: 20px; }
         .meta { font-size: 12px; color: var(--muted); text-transform: uppercase; }
@@ -24,20 +30,22 @@
     <nav>
         <div style="font-weight: bold;">NYLONPIXELATED</div>
         <div class="nav-links">
-            <span>ABOUT</span><span>PROJECTS</span><span>CONTACT</span>
+            <a href="#about">ABOUT</a>
+            <a href="#projects">PROJECTS</a>
+            <a href="#contact">CONTACT</a>
         </div>
-        <div style="border: 1px solid #fff; padding: 8px 16px; border-radius: 20px; font-size: 12px;">SYSTEM STATUS</div>
+        <button class="hire-btn" onclick="window.location.href='#contact'">HIRE ME</button>
     </nav>
 
     <div class="hero">
-        <div class="status-pill">● ARCHITECTING FEATHER</div>
+        <div class="status-pill">● ARCHITECTING FEATHER FRAMEWORK</div>
         <h1>NYLON PIXELATED.</h1>
-        <p style="color: #666; margin-top: 20px;">Front & Back-end Programmer</p>
+        <p style="color: #666; margin-top: 20px;">System Architect & Roblox Developer.</p>
     </div>
 
-    <section class="project-list">
+    <section id="projects" class="project-list">
         <div class="project-item">
-            <div class="meta">001 // FEATHER</div>
+            <div class="meta">001 // FRAMEWORK</div>
             <h3>Feather</h3>
         </div>
         <div class="project-item">
