@@ -2,83 +2,145 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>nylonpixelated.</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
         
-        :root { --bg: #050505; --text: #ededed; --accent: #ffffff; }
+        :root { 
+            --bg: #030303; 
+            --text: #a1a1a1; 
+            --accent: #ffffff; 
+        }
         
         body { 
-            margin: 0; background: var(--bg); color: var(--text); 
-            font-family: 'Geist', sans-serif; overflow: hidden;
-            display: flex; justify-content: center; align-items: center; height: 100vh;
+            margin: 0; 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'JetBrains Mono', monospace; 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
-        #canvas { position: fixed; inset: 0; z-index: -1; }
-
-        .wrapper { 
-            text-align: center; z-index: 10; 
-            backdrop-filter: blur(10px); padding: 40px; border-radius: 20px;
+        #bg-canvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
         }
 
-        .nav { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
-        .nav a { color: #666; text-decoration: none; font-size: 14px; transition: 0.3s; }
-        .nav a:hover { color: var(--accent); }
-
-        h1 { font-weight: 300; font-size: 2rem; margin: 0; }
-        p { color: #888; font-size: 14px; max-width: 300px; margin: 10px auto; }
+        .main { 
+            text-align: center; 
+            z-index: 10;
+            padding: 20px;
+        }
+        
+        h1 { color: var(--accent); font-size: 1.2rem; font-weight: 600; margin-bottom: 2rem; }
+        .nav { display: flex; gap: 20px; justify-content: center; margin-bottom: 3rem; }
+        .tab { cursor: pointer; color: var(--text); font-size: 0.9rem; transition: 0.2s; }
+        .tab:hover, .tab.active { color: var(--accent); text-decoration: underline; }
+        .content { min-height: 200px; line-height: 1.6; max-width: 500px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas"></canvas>
+    <canvas id="bg-canvas"></canvas>
 
-    <div class="wrapper">
+    <div class="main">
         <h1>nylonpixelated.</h1>
-        <div class="nav">
-            <a href="#" onclick="update('about')">about</a>
-            <a href="#" onclick="update('projects')">projects</a>
-            <a href="#" onclick="update('contact')">contact</a>
-        </div>
-        <div id="content">
-            <p>Back-end Programmer. Modular systems & high-performance architecture.</p>
-        </div>
+        <nav class="nav">
+            <div class="tab active" onclick="nav('about', this)">about</div>
+            <div class="tab" onclick="nav('projects', this)">projects</div>
+            <div class="tab" onclick="nav('contact', this)">contact</div>
+        </nav>
+        <div id="content" class="content"></div>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
+        const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
-        let snippets = ["task.spawn()", "local Feather = {}", "require(Module)", "service.Physics"];
-        let particles = snippets.map(text => ({
-            text, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight,
-            vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2
-        }));
+        const mouse = { x: -1000, y: -1000 };
+        let width, height;
+
+        // Custom resize engine
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => { 
+            mouse.x = e.clientX; 
+            mouse.y = e.clientY; 
+        });
+        resize();
+
+        class Snippet {
+            constructor(text) {
+                this.text = text;
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = (Math.random() - 0.5) * 0.4;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce logic with 100px padding
+                const pad = 100;
+                if (this.x < pad || this.x > width - pad) this.vx *= -1;
+                if (this.y < pad || this.y > height - pad) this.vy *= -1;
+
+                // Mouse Repel
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 150) {
+                    this.x += dx * 0.05;
+                    this.y += dy * 0.05;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = '#333333'; // High visibility gray
+                ctx.font = '14px JetBrains Mono';
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        const snippets = ["local Feather = {}", "task.spawn()", "require(Module)", "game:GetService", "ModuleScript", "local player = nil"];
+        const particles = snippets.map(t => new Snippet(t));
 
         function animate() {
-            ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#111'; ctx.font = '16px monospace';
-            
+            ctx.clearRect(0, 0, width, height);
             particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                ctx.fillText(p.text, p.x, p.y);
+                p.update();
+                p.draw();
             });
             requestAnimationFrame(animate);
         }
 
-        function update(section) {
-            const content = {
-                about: "<p>Engineering modular Roblox systems since 2020.</p>",
-                projects: "<p>Feather Framework & Slime Tower Defense.</p>",
-                contact: "<p>Discord: .c_ade | Roblox: toymegalodon</p>"
-            };
-            document.getElementById('content').innerHTML = content[section] || content.about;
-        }
+        window.onload = animate;
 
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        animate();
+        const content = {
+            about: `<img src="https://cdn.discordapp.com/avatars/1081297655516385331/cd8edc05ba9c5f59e3ce3ca7ad74cc84.png" class="avatar"><p>backend programmer.<br>building modular systems since 2020.<br>specializing in feather framework.</p>`,
+            projects: `<p>> feather-framework<br>> slime-tower-defense<br>> feed-a-dragon</p>`,
+            contact: `<p>discord: .c_ade<br>roblox: toymegalodon<br>email: gamingmaavis@gmail.com</p>`
+        };
+
+        function nav(id, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('content').innerHTML = content[id];
+        }
+        nav('about', document.querySelector('.tab'));
     </script>
 </body>
 </html>
