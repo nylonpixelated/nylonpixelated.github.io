@@ -3,81 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <title>nylonpixelated.</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
-        :root { --bg: #030303; --glass: rgba(255, 255, 255, 0.04); }
-        body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;500&display=swap');
         
-        #physics-canvas { position: fixed; inset: 0; z-index: -1; }
+        :root { --bg: #050505; --text: #ededed; --accent: #ffffff; }
         
-        .container { width: min(90%, 900px); margin: 60px auto; pointer-events: none; }
-        .nav { pointer-events: auto; display: flex; gap: 30px; margin-bottom: 40px; }
-        .tab { cursor: pointer; color: #555; font-weight: 700; transition: 0.3s; }
-        .tab.active { color: #fff; }
-        
-        #content-wrapper { 
-            pointer-events: auto; background: var(--glass); padding: 50px; border-radius: 32px;
-            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; transform: translateY(0);
+        body { 
+            margin: 0; background: var(--bg); color: var(--text); 
+            font-family: 'Geist', sans-serif; overflow: hidden;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
         }
-        .hidden { opacity: 0; transform: translateY(30px); }
+
+        #canvas { position: fixed; inset: 0; z-index: -1; }
+
+        .wrapper { 
+            text-align: center; z-index: 10; 
+            backdrop-filter: blur(10px); padding: 40px; border-radius: 20px;
+        }
+
+        .nav { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
+        .nav a { color: #666; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .nav a:hover { color: var(--accent); }
+
+        h1 { font-weight: 300; font-size: 2rem; margin: 0; }
+        p { color: #888; font-size: 14px; max-width: 300px; margin: 10px auto; }
     </style>
 </head>
 <body>
-    <div id="physics-canvas"></div>
-    
-    <div class="container">
-        <nav class="nav">
-            <div class="tab active" onclick="navigate('about', this)">about</div>
-            <div class="tab" onclick="navigate('projects', this)">projects</div>
-            <div class="tab" onclick="navigate('games', this)">games</div>
-        </nav>
-        <div id="content-wrapper"></div>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="wrapper">
+        <h1>nylonpixelated.</h1>
+        <div class="nav">
+            <a href="#" onclick="update('about')">about</a>
+            <a href="#" onclick="update('projects')">projects</a>
+            <a href="#" onclick="update('contact')">contact</a>
+        </div>
+        <div id="content">
+            <p>Back-end Programmer. Modular systems & high-performance architecture.</p>
+        </div>
     </div>
 
     <script>
-        const { Engine, Render, World, Bodies, Mouse, MouseConstraint, Runner } = Matter;
-        const engine = Engine.create();
-        const render = Render.create({ 
-            element: document.getElementById('physics-canvas'), 
-            engine: engine, 
-            options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
-        });
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let snippets = ["task.spawn()", "local Feather = {}", "require(Module)", "service.Physics"];
+        let particles = snippets.map(text => ({
+            text, x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight,
+            vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2
+        }));
 
-        // Anti-gravity floating code snippets
-        engine.gravity.y = -0.02; 
-        const snippets = ["local Feather = {}", "function init()", "require(module)", "service.Physics", "task.spawn()", "local player = nil"];
-        
-        snippets.forEach((text, i) => {
-            let b = Bodies.rectangle(Math.random()*window.innerWidth, Math.random()*window.innerHeight, 180, 50, {
-                render: { fillStyle: '#111', strokeStyle: '#333', lineWidth: 2 },
-                frictionAir: 0.02
+        function animate() {
+            ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#111'; ctx.font = '16px monospace';
+            
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.fillText(p.text, p.x, p.y);
             });
-            World.add(engine.world, b);
-        });
-
-        World.add(engine.world, MouseConstraint.create(engine, { mouse: Mouse.create(render.canvas) }));
-        Runner.run(Runner.create(), engine);
-        Render.run(render);
-
-        // Content
-        const avatarUrl = "https://cdn.discordapp.com/avatars/1081297655516385331/cd8edc05ba9c5f59e3ce3ca7ad74cc84.png?size=512";
-        const pages = {
-            about: `<h1>About</h1><img src="${avatarUrl}" style="width:100px; border-radius:20px;"><p>Modular system architect & Roblox dev.</p>`,
-            projects: `<h1>Projects</h1><p>Feather Framework: The future of performance.</p>`,
-            games: `<h1>Games</h1><p>Slime TDS & Feed a Dragon.</p>`
-        };
-
-        async function navigate(page, el) {
-            const w = document.getElementById('content-wrapper');
-            w.classList.add('hidden');
-            await new Promise(r => setTimeout(r, 600));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            w.innerHTML = pages[page];
-            w.classList.remove('hidden');
+            requestAnimationFrame(animate);
         }
-        navigate('about', document.querySelector('.tab'));
+
+        function update(section) {
+            const content = {
+                about: "<p>Engineering modular Roblox systems since 2020.</p>",
+                projects: "<p>Feather Framework & Slime Tower Defense.</p>",
+                contact: "<p>Discord: .c_ade | Roblox: toymegalodon</p>"
+            };
+            document.getElementById('content').innerHTML = content[section] || content.about;
+        }
+
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        animate();
     </script>
 </body>
 </html>
