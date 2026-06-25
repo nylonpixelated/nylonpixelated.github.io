@@ -5,27 +5,22 @@
     <title>nylonpixelated.</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
-        :root { --bg: #030303; --glass: rgba(255, 255, 255, 0.05); }
+        :root { --bg: #030303; --glass: rgba(255, 255, 255, 0.04); }
         body { margin: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
         
         #physics-canvas { position: fixed; inset: 0; z-index: -1; }
         
-        .container { width: min(90%, 900px); margin: 60px auto; }
+        .container { width: min(90%, 900px); margin: 60px auto; pointer-events: none; }
+        .nav { pointer-events: auto; display: flex; gap: 30px; margin-bottom: 40px; }
+        .tab { cursor: pointer; color: #555; font-weight: 700; transition: 0.3s; }
+        .tab.active { color: #fff; }
         
-        /* Navigation */
-        .nav { display: flex; gap: 25px; margin-bottom: 40px; }
-        .tab { cursor: pointer; color: #555; font-weight: 600; transition: 0.3s; }
-        .tab:hover, .tab.active { color: #fff; }
-        
-        /* Transition Engine */
         #content-wrapper { 
-            position: relative; min-height: 400px;
-            background: var(--glass); padding: 50px; border-radius: 32px;
-            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
-            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: auto; background: var(--glass); padding: 50px; border-radius: 32px;
+            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); opacity: 1; transform: translateY(0);
         }
-        .fade-out { opacity: 0; transform: translateY(20px); }
-        .fade-in { opacity: 1; transform: translateY(0); }
+        .hidden { opacity: 0; transform: translateY(30px); }
     </style>
 </head>
 <body>
@@ -37,54 +32,51 @@
             <div class="tab" onclick="navigate('projects', this)">projects</div>
             <div class="tab" onclick="navigate('games', this)">games</div>
         </nav>
-        
         <div id="content-wrapper"></div>
     </div>
 
     <script>
-        // engine
         const { Engine, Render, World, Bodies, Mouse, MouseConstraint, Runner } = Matter;
         const engine = Engine.create();
-        const render = Render.create({ element: document.getElementById('physics-canvas'), engine: engine, options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }});
-        
-        // gravity thing
-        engine.gravity.y = -0.05; 
+        const render = Render.create({ 
+            element: document.getElementById('physics-canvas'), 
+            engine: engine, 
+            options: { width: window.innerWidth, height: window.innerHeight, wireframes: false, background: 'transparent' }
+        });
 
-        // create floating luau
-        for(let i=0; i<8; i++) {
-            let body = Bodies.rectangle(Math.random()*window.innerWidth, Math.random()*window.innerHeight, 150, 40, {
-                render: { fillStyle: '#111', strokeStyle: '#333', lineWidth: 1 },
-                frictionAir: 0.05
-            });
-            World.add(engine.world, body);
-        }
+        // Anti-gravity floating code snippets
+        engine.gravity.y = -0.02; 
+        const snippets = ["local Feather = {}", "function init()", "require(module)", "service.Physics", "task.spawn()", "local player = nil"];
         
+        snippets.forEach((text, i) => {
+            let b = Bodies.rectangle(Math.random()*window.innerWidth, Math.random()*window.innerHeight, 180, 50, {
+                render: { fillStyle: '#111', strokeStyle: '#333', lineWidth: 2 },
+                frictionAir: 0.02
+            });
+            World.add(engine.world, b);
+        });
+
         World.add(engine.world, MouseConstraint.create(engine, { mouse: Mouse.create(render.canvas) }));
         Runner.run(Runner.create(), engine);
         Render.run(render);
 
-        // get my avatr from discord api
-        const avatarUrl = `https://cdn.discordapp.com/avatars/1081297655516385331/cd8edc05ba9c5f59e3ce3ca7ad74cc84.png?size=512`;
+        // Content
+        const avatarUrl = "https://cdn.discordapp.com/avatars/1081297655516385331/cd8edc05ba9c5f59e3ce3ca7ad74cc84.png?size=512";
         const pages = {
-            about: `<h1>About</h1><img src="${avatarUrl}" style="width:120px; border-radius:24px;"><p>Engineering modular Roblox systems since 2020.</p>`,
-            projects: `<h1>Projects</h1><p>Feather Framework: A lightweight bootstrap for heavy games.</p>`,
-            games: `<h1>Games</h1><p>Slime Tower Defense: A wave-based strategy experience.</p>`
+            about: `<h1>About</h1><img src="${avatarUrl}" style="width:100px; border-radius:20px;"><p>Modular system architect & Roblox dev.</p>`,
+            projects: `<h1>Projects</h1><p>Feather Framework: The future of performance.</p>`,
+            games: `<h1>Games</h1><p>Slime TDS & Feed a Dragon.</p>`
         };
 
         async function navigate(page, el) {
-            const wrapper = document.getElementById('content-wrapper');
-            // remove active class
+            const w = document.getElementById('content-wrapper');
+            w.classList.add('hidden');
+            await new Promise(r => setTimeout(r, 600));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-
-            wrapper.classList.add('fade-out');
-            await new Promise(r => setTimeout(r, 500));
-            wrapper.innerHTML = pages[page];
-            wrapper.classList.remove('fade-out');
-            wrapper.classList.add('fade-in');
+            w.innerHTML = pages[page];
+            w.classList.remove('hidden');
         }
-
-        // init on page load
         navigate('about', document.querySelector('.tab'));
     </script>
 </body>
