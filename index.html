@@ -70,7 +70,7 @@
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        const texts = ["local Feather = {}", "task.spawn()", "require(module)", "game:GetService", "ModuleScript"];
+        const texts = ["local Feather = {}", "task.spawn()", "require(module)", "game:GetService", "ModuleScript", "repeat task.wait() until game:IsLoaded()", "print('Hello World!')", "Feather:featherInit()"];
         const pad = 100;
 
         function resize() {
