@@ -30,7 +30,12 @@
         .header-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 0.5rem; }
         h1 { color: var(--accent); font-size: 1.2rem; font-weight: 600; margin: 0; cursor: pointer; }
         .pfp { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #333; }
-        
+
+        .work-gallery {display: flex; flex-direction: column; gap: 24px; margin-top: 20px; width: 100%}
+        .gallery-item h3 {font-size: 1.1rem; margin-bottom: 8px; color: #ffffff}
+        .showcase-video,
+        .showcase-img {width: 100%; max-width: 600px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1)}
+       
         .sub { font-size: 0.8rem; margin-bottom: 2rem; }
         .nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 2rem; flex-wrap: wrap; }
         .tab { cursor: pointer; color: var(--text); font-size: 0.9rem; transition: 0.2s; }
@@ -59,6 +64,7 @@
                 <div class="tab active" onclick="nav('about', this)">about</div>
                 <div class="tab" onclick="nav('projects', this)">active projects</div>
                 <div class="tab" onclick="nav('pastwork', this)">past work</div>
+                 <div class="tab" onclick="nav('exp', this)">experience</div>
                 <div class="tab" onclick="nav('contact', this)">contact</div>
                 <div class="tab" onclick="nav('hire', this)">hire</div>
                 
@@ -113,7 +119,7 @@
         }
 
         const svgs = {
-            house: `<svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+            game: `<svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
             feather: `<svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>`,
             discord: `<svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.579.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.093-.775-9.52-3.444-13.659a.066.066 0 0 0-.033-.027z"/></svg>`,
             github: `<svg class="svg-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>`,
@@ -126,16 +132,28 @@
              <div class="project-item">${svgs.github} nylonpixelated</div>
              <div class="project-item">${svgs.roblox} toymegalodon</div>
             `,
-            pastwork:  `<p>Ruh roh! You ran into a unfinished part of this github!<br>Errors like this often happen when the site is being worked on but there is no live-preview ready to be viewd by the public.</p>
-            <div class="project-item">${svgs.github} nylonpixelated</div>
-             <div class="project-item">${svgs.discord} .c_ade</div>
+            pastwork:  `<div class="work-gallery">
+                <div class="gallery-item">
+                    <h3>Lighting Test</h3>
+                    <video controls muted autoplay loop playsinline class="showcase-video">
+                        <source src="files/uipreview1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
             `,
             projects: `
-                <div class="project-item">${svgs.house} Slime Tower Defense</div>
-                <div class="project-item">${svgs.house} Feed A Dragon</div>
-                <div class="project-item">${svgs.roblox} Sad Hotels</div>
+                <div class="project-item">${svgs.game} Slime Tower Defense</div>
+                <div class="project-item">${svgs.game} Feed A Dragon</div>
+                <div class="project-item">${svgs.roblox} Retribution</div>
 
                 <div class="project-item">${svgs.feather} Feather Framework</div>
+            `,
+            exp: `
+               <div class="project-item">${svgs.roblox} director @ interactive slime studios</div>
+               <div class="project-item">${svgs.roblox} scripter @ retribution</div>
+               <div class="project-item">${svgs.roblox} former co-own @ jayden development studios</div>
+               <div class="project-item">${svgs.roblox} former dev @ AMSCO, JMCSO, DMSCO</div>
+               <div class="project-item">${svgs.roblox} former ownership @ crypto's cafe</div>
             `,
             contact: `
                 <p>Reach out any-time through these selected socials.</p>
