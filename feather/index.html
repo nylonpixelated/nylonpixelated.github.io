@@ -1,74 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feather</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feather Framework</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { 
-            --bg: #050505; --card: #111; --text: #eee; --accent: #4f46e5; 
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        :root {
+            --bg: #060708;
+            --panel: #0d0f12;
+            --panel-soft: #14161a;
+            --text: #f4f7fb;
+            --muted: #99a4b3;
+            --accent: #7c8cff;
+            --accent-2: #5eead4;
+            --line: rgba(255,255,255,0.08);
+            --glow: rgba(124, 156, 255, 0.28);
         }
-        body { margin: 0; font-family: 'Inter', system-ui; background: var(--bg); color: var(--text); padding: 2rem; }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        header { border-bottom: 1px solid #222; padding-bottom: 2rem; margin-bottom: 3rem; }
-        .hero-title { display: flex; align-items: center; gap: 1rem; }
-        .feather-icon { width: 50px; height: 50px; fill: var(--accent); }
-        
-        .section { margin-bottom: 3rem; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        
-        /* Interactive Card */
-        .card { 
-            background: var(--card); padding: 2rem; border-radius: 16px; 
-            border: 1px solid #222; transition: var(--transition);
-            position: relative; overflow: hidden; cursor: pointer;
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(124,156,255,0.18), transparent 26%),
+                radial-gradient(circle at bottom right, rgba(94,234,212,0.1), transparent 24%),
+                linear-gradient(180deg, #07090c, #040507 60%, #060708);
+            position: relative;
+            overflow-x: hidden;
         }
-        .card:hover { 
-            border-color: var(--accent); 
-            transform: translateY(-8px) scale(1.02); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(79, 70, 229, 0.2); 
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.68), transparent 92%);
+            pointer-events: none;
         }
-        
-        h2 { color: var(--accent); font-size: 1.5rem; }
-        .dev-bio { font-style: italic; color: #aaa; border-left: 3px solid var(--accent); padding-left: 1rem; }
-        a { color: var(--accent); text-decoration: none; font-weight: 600; display: inline-block; margin-top: 1rem; transition: var(--transition); }
-        .card:hover a { letter-spacing: 0.05rem; }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        .frame {
+            position: relative;
+            z-index: 1;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 36px 16px 48px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(124,156,255,0.22), rgba(94,234,212,0.14));
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.32);
+            flex-shrink: 0;
+            animation: float 4.8s ease-in-out infinite;
+        }
+
+        .feather-icon {
+            width: 28px;
+            height: 28px;
+            fill: #d9e4ff;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            letter-spacing: -0.03em;
+        }
+
+        .tag {
+            padding: 8px 10px;
+            border-radius: 999px;
+            color: #cfe0ff;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .panel {
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(14,16,19,0.95), rgba(10,12,15,0.98));
+            border: 1px solid var(--line);
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.38);
+            transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::after {
+            content: '';
+            position: absolute;
+            inset: auto auto -60px -50px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124,156,255,0.16), transparent 64%);
+            pointer-events: none;
+        }
+
+        .panel:hover {
+            transform: translateY(-4px);
+            border-color: rgba(124,156,255,0.5);
+            box-shadow: 0 26px 60px rgba(0,0,0,0.42), 0 0 0 1px rgba(124,156,255,0.08) inset;
+        }
+
+        .hero {
+            margin-bottom: 22px;
+            animation: riseIn 0.8s both;
+        }
+
+        .hero h2 {
+            font-size: clamp(2rem, 4.8vw, 3.15rem);
+            line-height: 1.05;
+            letter-spacing: -0.05em;
+            margin: 0 0 10px;
+        }
+
+        .hero h2 span {
+            color: #8fd7ff;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.82;
+            max-width: 760px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            animation: riseIn 1s both;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.72rem;
+            color: #9aa9c1;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+        }
+
+        .card p,
+        .card li {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .card ul {
+            padding-left: 18px;
+            margin: 12px 0 0;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .pill {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #d5dff3;
+            font-size: 0.76rem;
+        }
+
+        .link-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .link-btn:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(124,156,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #d6e6ff;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @media (max-width: 640px) {
+            .frame { padding: 20px 14px 36px; }
+            .topbar { flex-direction: column; align-items: flex-start; }
+            .panel { padding: 18px; }
+        }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
 
-<div class="container">
-    <header>
-        <div class="hero-title">
-            <svg class="feather-icon" viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5zM16 8l2 2"/></svg>
-            <h1>Feather Framework</h1>
+    <main class="frame">
+        <div class="topbar reveal">
+            <div class="brand">
+                <div class="logo">
+                    <svg class="feather-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+                        <path d="M16 8l2 2"></path>
+                        <path d="M16 8l-4 4"></path>
+                    </svg>
+                </div>
+                <h1>Feather Framework</h1>
+            </div>
+            <div class="tag">Roblox tooling</div>
         </div>
-        <p>Striving to optimize Roblox development to its absolute peak.</p>
-    </header>
 
-    <div class="section">
-        <h2>About the Developer</h2>
-        <div class="card">
-            <p><strong>toymegalodon</strong> has been pushing the boundaries of Roblox development since 2021.</p>
-            <p class="dev-bio">"Feather was built with a singular mission: to strip away the overhead and provide a high-performance, developer-first environment that allows creators to focus on the experience, not the boilerplate."</p>
-        </div>
-    </div>
+        <section class="hero panel reveal">
+            <h2>Take the edge off development and build with <span>more focus</span>.</h2>
+            <p>Feather was built to streamline Roblox workflows with a cleaner structure, more consistent execution, and a framework mindset that favors speed, clarity, and maintainability.</p>
+        </section>
 
-    <div class="card-grid">
-        <div class="card">
-            <h2>Documentation</h2>
-            <p>Access the full API reference and implementation guides to get started.</p>
-            <a href="https://nylonpixelated.github.io/feather/docs">View Docs →</a>
-        </div>
-        <div class="card">
-            <h2>GitHub</h2>
-            <p>Contribute to the open-source core or report bugs on our official repository.</p>
-            <a href="https://github.com/nylonpixelated/feather">View Source →</a>
-        </div>
-    </div>
-</div>
+        <section class="grid">
+            <article class="panel card reveal">
+                <div class="eyebrow">About</div>
+                <h3>What Feather aims to solve</h3>
+                <p>Instead of forcing creators to sink time into boilerplate and repetitive infrastructure, Feather offers a more intentional foundation for building fast and scaling well.</p>
+                <div class="pill-row">
+                    <span class="pill">Performance-first</span>
+                    <span class="pill">Modular</span>
+                    <span class="pill">Reusable</span>
+                </div>
+            </article>
 
+            <article class="panel card reveal">
+                <div class="eyebrow">Developer</div>
+                <h3>Creative direction</h3>
+                <p>Built with the mindset that tooling should feel invisible: helpful, resilient, and ultimately easy to trust when a project needs momentum.</p>
+                <div class="mono">toymegalodon / feather</div>
+            </article>
+        </section>
+
+        <section class="grid" style="margin-top: 18px;">
+            <article class="panel card reveal">
+                <div class="eyebrow">Documentation</div>
+                <h3>Explore the framework</h3>
+                <p>Start with the docs to understand the architecture, setup flow, and the practical ways Feather helps accelerate a project.</p>
+                <div class="link-row">
+                    <a class="link-btn" href="https://nylonpixelated.github.io/feather/docs" target="_blank"><i data-lucide="book-open"></i> Open docs</a>
+                    <a class="link-btn" href="https://github.com/nylonpixelated/feather" target="_blank"><i data-lucide="github"></i> GitHub</a>
+                </div>
+            </article>
+
+            <article class="panel card reveal">
+                <div class="eyebrow">Why it matters</div>
+                <h3>Less friction, more output</h3>
+                <ul>
+                    <li>Cleaner workflow structure</li>
+                    <li>More maintainable projects</li>
+                    <li>Faster iteration cycles</li>
+                </ul>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const words = [
+            'local Feather = {}',
+            'task.spawn()',
+            'require(module)',
+            'game:GetService',
+            'ModuleScript',
+            'repeat task.wait() until game:IsLoaded()',
+            'print("Hello World!")',
+            'Feather:Init()'
+        ];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.text = words[Math.floor(Math.random() * words.length)];
+                this.x = Math.random() * (canvas.width - 160) + 80;
+                this.y = Math.random() * (canvas.height - 160) + 80;
+                this.vx = (Math.random() - 0.5) * 0.18;
+                this.vy = (Math.random() - 0.5) * 0.18;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 40 || this.x > canvas.width - 40) this.vx *= -1;
+                if (this.y < 40 || this.y > canvas.height - 40) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(124, 156, 255, 0.07)';
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        function initParticles() {
+            particles = Array.from({ length: 14 }, () => new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function revealCards() {
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                setTimeout(() => el.classList.add('visible'), i * 70);
+            });
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        initParticles();
+        animate();
+        lucide.createIcons();
+        revealCards();
+    </script>
 </body>
 </html>
