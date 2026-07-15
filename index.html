@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nylonpixelated | Portfolio</title>
+    <link rel="icon" href="https://cdn.discordapp.com/avatars/1005728136857649193/fce65101e74d607b0f44d164fa883bb7.png?size=512" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #07111b;
+            --panel: rgba(9, 16, 26, 0.78);
+            --panel-strong: rgba(12, 20, 32, 0.94);
+            --text: #eaf4ff;
+            --muted: #8fa4c0;
+            --accent: #5eead4;
+            --accent-2: #60a5fa;
+            --line: rgba(255,255,255,0.08);
+            --glow: rgba(94, 234, 212, 0.3);
+            --radius: 24px;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(96, 165, 250, 0.25), transparent 28%),
+                radial-gradient(circle at top right, rgba(94, 234, 212, 0.22), transparent 26%),
+                linear-gradient(135deg, #050910, #08111a 52%, #050910);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 92%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 46vw;
+            height: 46vw;
+            border-radius: 50%;
+            right: -10vw;
+            top: -12vw;
+            background: radial-gradient(circle, rgba(94,234,212,0.2), transparent 62%);
+            filter: blur(12px);
+            pointer-events: none;
+            animation: orbMove 12s ease-in-out infinite alternate;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.45;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 2;
+            width: min(1220px, calc(100% - 22px));
+            margin: 16px auto;
+            padding: 14px;
+            border-radius: 26px;
+            background: rgba(6, 11, 20, 0.64);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 30px 100px rgba(0,0,0,0.45);
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 280px 220px 1fr;
+            min-height: 82vh;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(7, 12, 20, 0.8);
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--line);
+        }
+
+        .panel:last-child { border-right: none; }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            inset: -30%;
+            background: conic-gradient(from 180deg, transparent, rgba(94,234,212,0.06), transparent, rgba(96,165,250,0.08), transparent);
+            animation: spin 16s linear infinite;
+            pointer-events: none;
+        }
+
+        .panel > * { position: relative; z-index: 1; }
+
+        .top-strip {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(10, 16, 26, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            font-size: 0.74rem;
+            letter-spacing: 0.12em;
+            color: #9ab0cf;
+        }
+
+        .identity {
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            animation: riseIn 0.8s both;
+        }
+
+        .pfp-wrap {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            animation: float 4.5s infinite ease-in-out;
+        }
+
+        .pfp-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(94,234,212,0.4), rgba(96,165,250,0.45));
+            filter: blur(8px);
+            opacity: 0.65;
+        }
+
+        .pfp {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 26px;
+            border: 1px solid rgba(255,255,255,0.12);
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-dot {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #22c55e;
+            border: 3px solid #0a1120;
+            box-shadow: 0 0 12px rgba(34,197,94,0.8);
+            z-index: 2;
+        }
+
+        .name {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.25s ease;
+        }
+
+        .name:hover { color: var(--accent); }
+
+        .role {
+            margin: 0;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+        }
+
+        .identity-stats {
+            margin-top: 8px;
+            width: 100%;
+            padding: 0 4px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .stat-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: var(--muted);
+            font-size: 0.76rem;
+            animation: riseIn 0.9s both;
+        }
+
+        .stat-line strong {
+            margin-left: auto;
+            color: var(--text);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+        }
+
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px 12px;
+            animation: riseIn 1s both;
+        }
+
+        .tab {
+            cursor: pointer;
+            padding: 12px 14px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 0.86rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .tab:hover {
+            transform: translateX(3px);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+        }
+
+        .tab.active {
+            color: white;
+            background: linear-gradient(135deg, rgba(94,234,212,0.9), rgba(96,165,250,0.9));
+            box-shadow: 0 12px 30px rgba(94,234,212,0.25);
+        }
+
+        .tab svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .tabs-bar {
+            height: 56px;
+            padding: 0 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            background: rgba(8, 14, 22, 0.9);
+        }
+
+        .editor-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.82rem;
+            animation: pulse 4s infinite;
+        }
+
+        .content-viewport {
+            padding: 24px;
+            overflow: auto;
+            flex: 1;
+        }
+
+        .content {
+            display: grid;
+            gap: 16px;
+            animation: fadeIn 0.45s ease;
+        }
+
+        .hero-card,
+        .info-card,
+        .project-card,
+        .contact-card {
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(13, 21, 34, 0.92), rgba(8, 14, 23, 0.95));
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 18px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+            transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+        }
+
+        .hero-card:hover,
+        .info-card:hover,
+        .project-card:hover,
+        .contact-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            border-color: rgba(94,234,212,0.35);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.28), 0 0 0 1px rgba(94,234,212,0.08) inset;
+        }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+            animation: riseIn 0.9s both;
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            inset: -20% auto auto -15%;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(94,234,212,0.28), transparent 60%);
+            animation: drift 6s ease-in-out infinite;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(94,234,212,0.1);
+            border: 1px solid rgba(94,234,212,0.28);
+            color: #d9fff9;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hero-card h2 {
+            margin: 14px 0 10px;
+            font-size: 2rem;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-card h2 span { color: #87d7ff; }
+
+        .hero-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn {
+            text-decoration: none;
+            border-radius: 14px;
+            padding: 11px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #05111b;
+            box-shadow: 0 12px 26px rgba(94,234,212,0.24);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+        }
+
+        .mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .mini-stat {
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.035);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: riseIn 0.95s both;
+        }
+
+        .mini-stat strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .mini-stat span {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #92a7c5;
+            margin-bottom: 12px;
+        }
+
+        .info-list,
+        .project-list,
+        .timeline {
+            display: grid;
+            gap: 12px;
+        }
+
+        .project-card,
+        .contact-card,
+        .info-card {
+            animation: riseIn 1s both;
+        }
+
+        .project-card strong,
+        .contact-card strong,
+        .info-card strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
+        .project-card span,
+        .contact-card span,
+        .info-card span,
+        .info-card p {
+            color: var(--muted);
+            line-height: 1.72;
+            font-size: 0.9rem;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .pill {
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #d6e4fb;
+            font-size: 0.76rem;
+            animation: pulse 4s infinite;
+        }
+
+        .contact-links {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            padding: 13px 14px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateX(3px);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(2, 6, 12, 0.7);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            font: inherit;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            transform: scale(1.01);
+            border-color: rgba(94,234,212,0.9);
+            box-shadow: 0 0 0 3px rgba(94,234,212,0.16);
+        }
+
+        .contact-form button {
+            width: fit-content;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #04111b;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .contact-form button:hover {
+            transform: translateY(-2px) scale(1.02);
+            filter: brightness(1.08);
+        }
+
+        .reveal { opacity: 0; transform: translateY(20px); }
+        .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(94,234,212,0.15); }
+            50% { box-shadow: 0 0 0 10px rgba(94,234,212,0.0); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(18px, 18px) scale(1.08); }
+        }
+
+        @keyframes orbMove {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-20px, 26px, 0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 980px) {
+            .app-grid { grid-template-columns: 1fr; }
+            .panel { border-right: none; border-bottom: 1px solid var(--line); }
+            .side-nav { flex-direction: row; flex-wrap: wrap; }
+            .content-viewport { padding: 16px; }
+        }
+
+        @media (max-width: 640px) {
+            .shell { width: calc(100% - 10px); margin: 5px auto; padding: 8px; }
+            .hero-card h2 { font-size: 1.65rem; }
+            .mini-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="shell">
+        <div class="app-grid">
+            <aside class="panel">
+                <div class="top-strip"><i data-lucide="user"></i> Profile</div>
+                <div class="identity">
+                    <div class="pfp-wrap">
+                        <img class="pfp" src="https://cdn.discordapp.com/avatars/1005728136857649193/fce65101e74d607b0f44d164fa883bb7.png?size=512" alt="pfp" />
+                        <div class="status-dot"></div>
+                    </div>
+                    <h1 class="name">nylonpixelated</h1>
+                    <p class="role"><i data-lucide="terminal"></i> Backend systems & game architecture</p>
+                    <p class="role"><i data-lucide="users"></i> Community-first builder</p>
+                    <div class="identity-stats">
+                        <div class="stat-line"><i data-lucide="map-pin"></i> Region <strong>United States</strong></div>
+                        <div class="stat-line"><i data-lucide="code-2"></i> Stack <strong>LuaU / JS</strong></div>
+                        <div class="stat-line"><i data-lucide="activity"></i> Status <strong id="status-label">Online</strong></div>
+                    </div>
+                </div>
+            </aside>
+
+            <aside class="panel">
+                <div class="top-strip"><i data-lucide="folder-open"></i> Directory</div>
+                <nav class="side-nav">
+                    <div class="tab active" data-page="about"><i data-lucide="file-text"></i> About</div>
+                    <div class="tab" data-page="projects"><i data-lucide="sparkles"></i> Projects</div>
+                    <div class="tab" data-page="experience"><i data-lucide="briefcase"></i> Experience</div>
+                    <div class="tab" data-page="contact"><i data-lucide="send"></i> Contact</div>
+                </nav>
+            </aside>
+
+            <section class="workspace panel">
+                <div class="tabs-bar">
+                    <div class="editor-tab"><i data-lucide="file-code"></i> portfolio_active.lua</div>
+                </div>
+                <div class="content-viewport">
+                    <div id="content" class="content"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const pages = {
+            about: `
+                <div class="hero-card reveal">
+                    <div class="eyebrow"><i data-lucide="sparkles"></i> Software & systems</div>
+                    <h2>Building clean, efficient, <span>modern experiences</span>.</h2>
+                    <p>I design backend systems, production-ready game architecture, and polished user-facing flows that feel seamless, fast, and intentional.</p>
+                    <div class="cta-row">
+                        <a class="btn btn-primary" href="#contact">Hire me</a>
+                        <a class="btn btn-secondary" href="#projects">View work</a>
+                    </div>
+                </div>
+
+                <div class="mini-grid">
+                    <div class="mini-stat reveal">
+                        <strong>6+</strong>
+                        <span>Years building systems</span>
+                    </div>
+                    <div class="mini-stat reveal">
+                        <strong>10+</strong>
+                        <span>Projects shipped</span>
+                    </div>
+                    <div class="mini-stat reveal">
+                        <strong>LuaU</strong>
+                        <span>Game logic and tooling</span>
+                    </div>
+                    <div class="mini-stat reveal">
+                        <strong>JS</strong>
+                        <span>Web and automation workflows</span>
+                    </div>
+                </div>
+
+                <div class="info-card reveal">
+                    <div class="label">Profile</div>
+                    <strong>Backend-first developer with a production mindset</strong>
+                    <p>I focus on systems that stay invisible to the user while quietly holding the whole experience together. From service layers to modular frameworks, every decision is built for scale, consistency, and polish.</p>
+                    <div class="pill-row">
+                        <span class="pill">Roblox development</span>
+                        <span class="pill">Backend architecture</span>
+                        <span class="pill">Database logic</span>
+                        <span class="pill">Community ops</span>
+                        <span class="pill">System optimization</span>
+                    </div>
+                </div>
+            `,
+            projects: `
+                <div class="info-card reveal">
+                    <div class="label">Selected work</div>
+                    <strong>Projects that go beyond the surface</strong>
+                    <div class="project-list">
+                        <div class="project-card">
+                            <strong>Slime Tower Defense</strong>
+                            <span>Systems-focused tactical gameplay with scalable progression and economy structure.</span>
+                        </div>
+                        <div class="project-card">
+                            <strong>Feed A Dragon</strong>
+                            <span>Responsive event flow, economy systems, and polished player-focused feedback loops.</span>
+                        </div>
+                        <div class="project-card">
+                            <strong>Retribution RPG</strong>
+                            <span>Combat systems, infrastructure, and production-minded engineering across gameplay layers.</span>
+                        </div>
+                        <div class="project-card">
+                            <strong>Feather Framework</strong>
+                            <span>Reusable modular tooling tuned for fast iteration and maintainable project structure.</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            experience: `
+                <div class="info-card reveal">
+                    <div class="label">Experience</div>
+                    <strong>Leadership through execution</strong>
+                    <div class="timeline">
+                        <div class="project-card">
+                            <strong>Director — Interactive Slime Studios</strong>
+                            <span>Led technical direction, creative coordination, and production delivery across team systems.</span>
+                        </div>
+                        <div class="project-card">
+                            <strong>Scripter — Retribution Project</strong>
+                            <span>Built gameplay logic, backend hooks, and maintainable structures for long-term development.</span>
+                        </div>
+                        <div class="project-card">
+                            <strong>Former Co-Owner — Jayden Dev Studios</strong>
+                            <span>Collaborated on production pipelines, systems design, and operational planning.</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            contact: `
+                <div class="contact-card reveal">
+                    <div class="label">Contact</div>
+                    <strong>Let’s build something strong</strong>
+                    <span>Open to freelance, production contracts, and technical collaborations.</span>
+                    <div class="contact-links">
+                        <a class="contact-link" href="https://discord.gg/rPxTKgR53J" target="_blank"><i data-lucide="message-circle"></i> .c_ade on Discord</a>
+                        <a class="contact-link" href="https://github.com/nylonpixelated" target="_blank"><i data-lucide="github"></i> nylonpixelated on GitHub</a>
+                        <a class="contact-link" href="https://www.roblox.com/users/3720760431/profile" target="_blank"><i data-lucide="gamepad-2"></i> toymegalodon on Roblox</a>
+                    </div>
+                    <form class="contact-form" onsubmit="event.preventDefault(); window.location.href='mailto:gamingmaavis@gmail.com?subject=Portfolio%20Inquiry';">
+                        <input type="text" placeholder="Your name" required />
+                        <textarea rows="4" placeholder="Tell me about your project or team." required></textarea>
+                        <button type="submit">Send inquiry</button>
+                    </form>
+                </div>
+            `
+        };
+
+        const content = document.getElementById('content');
+        const tabs = document.querySelectorAll('.tab');
+
+        function activateTab(nextTab) {
+            tabs.forEach(tab => tab.classList.remove('active'));
+            nextTab.classList.add('active');
+            content.innerHTML = pages[nextTab.dataset.page];
+            lucide.createIcons();
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach((el, i) => {
+                    setTimeout(() => el.classList.add('visible'), i * 70);
+                });
+            }, 20);
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab));
+        });
+
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const codeWords = [
+            'local Feather = {}',
+            'task.spawn()',
+            'require(module)',
+            'game:GetService',
+            'ModuleScript',
+            'repeat task.wait() until game:IsLoaded()',
+            'print("Hello World!")',
+            'Feather:featherInit()',
+            'renderStepped',
+            'networked event',
+            'typecheck()'
+        ];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.text = codeWords[Math.floor(Math.random() * codeWords.length)];
+                this.x = Math.random() * (canvas.width - 120) + 60;
+                this.y = Math.random() * (canvas.height - 120) + 60;
+                this.vx = (Math.random() - 0.5) * 0.35;
+                this.vy = (Math.random() - 0.5) * 0.35;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 40 || this.x > canvas.width - 40) this.vx *= -1;
+                if (this.y < 40 || this.y > canvas.height - 40) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(94, 234, 212, 0.08)';
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        function initParticles() {
+            particles = Array.from({ length: 22 }, () => new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch('https://api.lanyard.rest/v1/users/1005728136857649193');
+                const data = await response.json();
+                const status = data?.data?.discord_status;
+                const statusMap = {
+                    online: { label: 'Online', color: '#22c55e' },
+                    idle: { label: 'Idle', color: '#f59e0b' },
+                    dnd: { label: 'Do Not Disturb', color: '#ef4444' },
+                    offline: { label: 'Offline', color: '#9ca3af' }
+                };
+                const picked = statusMap[status] || statusMap.offline;
+                document.getElementById('status-label').textContent = picked.label;
+                document.querySelector('.status-dot').style.background = picked.color;
+                document.querySelector('.status-dot').style.boxShadow = `0 0 12px ${picked.color}`;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        initParticles();
+        animate();
+        lucide.createIcons();
+        activateTab(document.querySelector('.tab.active'));
+        fetchStatus();
+    </script>
+</body>
+</html>
