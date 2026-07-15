@@ -1,4 +1,627 @@
-<div class="feature-copy">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nylonpixelated | Projects</title>
+    <link rel="icon" href="https://cdn.discordapp.com/avatars/1005728136857649193/fce65101e74d607b0f44d164fa883bb7.png?size=512" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #07111b;
+            --panel: rgba(9, 16, 26, 0.78);
+            --panel-strong: rgba(12, 20, 32, 0.94);
+            --text: #eaf4ff;
+            --muted: #8fa4c0;
+            --accent: #5eead4;
+            --accent-2: #60a5fa;
+            --line: rgba(255,255,255,0.08);
+            --glow: rgba(94, 234, 212, 0.3);
+            --radius: 24px;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(96, 165, 250, 0.25), transparent 28%),
+                radial-gradient(circle at top right, rgba(94, 234, 212, 0.22), transparent 26%),
+                linear-gradient(135deg, #050910, #08111a 52%, #050910);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent 92%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 46vw;
+            height: 46vw;
+            border-radius: 50%;
+            right: -10vw;
+            top: -12vw;
+            background: radial-gradient(circle, rgba(94,234,212,0.2), transparent 62%);
+            filter: blur(12px);
+            pointer-events: none;
+            animation: orbMove 12s ease-in-out infinite alternate;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.45;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 2;
+            width: min(1220px, calc(100% - 22px));
+            margin: 16px auto;
+            padding: 14px;
+            border-radius: 26px;
+            background: rgba(6, 11, 20, 0.64);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 30px 100px rgba(0,0,0,0.45);
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 82vh;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(7, 12, 20, 0.8);
+        }
+
+        .panel {
+            position: relative;
+            overflow: hidden;
+            border-right: 1px solid var(--line);
+        }
+
+        .panel:last-child { border-right: none; }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            inset: -30%;
+            background: conic-gradient(from 180deg, transparent, rgba(94,234,212,0.06), transparent, rgba(96,165,250,0.08), transparent);
+            animation: spin 16s linear infinite;
+            pointer-events: none;
+        }
+
+        .panel > * { position: relative; z-index: 1; }
+
+        .top-strip {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(10, 16, 26, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            font-size: 0.74rem;
+            letter-spacing: 0.12em;
+            color: #9ab0cf;
+        }
+
+        .identity {
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 14px;
+            animation: riseIn 0.8s both;
+        }
+
+        .pfp-wrap {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            animation: float 4.5s infinite ease-in-out;
+        }
+
+        .pfp-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(94,234,212,0.4), rgba(96,165,250,0.45));
+            filter: blur(8px);
+            opacity: 0.65;
+        }
+
+        .pfp {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 26px;
+            border: 1px solid rgba(255,255,255,0.12);
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-dot {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #22c55e;
+            border: 3px solid #0a1120;
+            box-shadow: 0 0 12px rgba(34,197,94,0.8);
+            z-index: 2;
+        }
+
+        .name {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.25s ease;
+        }
+
+        .name:hover { color: var(--accent); }
+
+        .role {
+            margin: 0;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+        }
+
+        .identity-stats {
+            margin-top: 8px;
+            width: 100%;
+            padding: 0 4px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .stat-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: var(--muted);
+            font-size: 0.76rem;
+            animation: riseIn 0.9s both;
+        }
+
+        .stat-line strong {
+            margin-left: auto;
+            color: var(--text);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+        }
+
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .tabs-bar {
+            height: 56px;
+            padding: 0 18px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            background: rgba(8, 14, 22, 0.9);
+        }
+
+        .editor-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.82rem;
+            animation: pulse 4s infinite;
+        }
+
+        .content-viewport {
+            padding: 24px;
+            overflow: auto;
+            flex: 1;
+        }
+
+        .content {
+            display: grid;
+            gap: 16px;
+            animation: fadeIn 0.45s ease;
+        }
+
+        .hero-card,
+        .info-card,
+        .project-card {
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(13, 21, 34, 0.92), rgba(8, 14, 23, 0.95));
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 20px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+            transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+        }
+
+        .hero-card:hover,
+        .info-card:hover,
+        .project-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            border-color: rgba(94,234,212,0.35);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.28), 0 0 0 1px rgba(94,234,212,0.08) inset;
+        }
+
+        .hero-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+            animation: riseIn 0.9s both;
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            inset: -20% auto auto -15%;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(94,234,212,0.28), transparent 60%);
+            animation: drift 6s ease-in-out infinite;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(94,234,212,0.1);
+            border: 1px solid rgba(94,234,212,0.28);
+            color: #d9fff9;
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .hero-card h2 {
+            margin: 14px 0 10px;
+            font-size: 2rem;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+
+        .hero-card h2 span { color: #87d7ff; }
+
+        .hero-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #92a7c5;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .featured-layout {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .feature-copy {
+            display: grid;
+            gap: 14px;
+        }
+
+        .feature-copy h3 {
+            margin: 0;
+            font-size: 1.35rem;
+            line-height: 1.2;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .overview-stat {
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .overview-stat strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.88rem;
+        }
+
+        .overview-stat span {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .video-frame {
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.03);
+            position: relative;
+        }
+
+        .video-frame video {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: cover;
+            background: #02040a;
+        }
+
+        .preview-flag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(6, 11, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .video-caption {
+            padding: 12px 14px 14px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.55;
+        }
+
+        .project-card {
+            animation: riseIn 1s both;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 220px;
+        }
+
+        .project-media {
+            width: 100%;
+            margin-bottom: 14px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .project-media video {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #02040a;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .project-card strong {
+            display: block;
+            font-size: 1.15rem;
+            color: var(--text);
+        }
+
+        .project-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 0.88rem;
+            margin: 8px 0 16px 0;
+            flex-grow: 1;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-bottom: 12px;
+        }
+
+        .pill {
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #d6e4fb;
+            font-size: 0.72rem;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+        }
+
+        .project-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: color 0.2s, background 0.2s, border-color 0.2s;
+        }
+
+        .project-btn:hover {
+            color: var(--accent);
+            background: rgba(94, 234, 212, 0.05);
+            border-color: rgba(94, 234, 212, 0.2);
+        }
+
+        .reveal { opacity: 0; transform: translateY(20px); }
+        .reveal.visible { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.985); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(94,234,212,0.15); }
+            50% { box-shadow: 0 0 0 10px rgba(94,234,212,0.0); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(18px, 18px) scale(1.08); }
+        }
+
+        @keyframes orbMove {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-20px, 26px, 0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 980px) {
+            .app-grid { grid-template-columns: 1fr; }
+            .panel { border-right: none; border-bottom: 1px solid var(--line); }
+            .content-viewport { padding: 16px; }
+            .project-grid { grid-template-columns: 1fr; }
+            .featured-layout { grid-template-columns: 1fr; }
+            .overview-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 540px) {
+            .overview-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .shell { width: calc(100% - 10px); margin: 5px auto; padding: 8px; }
+            .hero-card h2 { font-size: 1.65rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="shell">
+        <div class="app-grid">
+            <aside class="panel">
+                <div class="top-strip"><i data-lucide="user"></i> Profile</div>
+                <div class="identity">
+                    <div class="pfp-wrap">
+                        <img class="pfp" src="https://cdn.discordapp.com/avatars/1005728136857649193/fce65101e74d607b0f44d164fa883bb7.png?size=512" alt="pfp" />
+                        <div class="status-dot"></div>
+                    </div>
+                    <h1 class="name" onclick="window.location.href='mailto:gamingmaavis@gmail.com'">nylonpixelated</h1>
+                    <p class="role"><i data-lucide="terminal"></i> Backend systems & game architecture</p>
+                    <p class="role"><i data-lucide="users"></i> Community-first builder</p>
+                    <div class="identity-stats">
+                        <div class="stat-line"><i data-lucide="map-pin"></i> Region <strong>United States</strong></div>
+                        <div class="stat-line"><i data-lucide="code-2"></i> Stack <strong>LuaU / JS</strong></div>
+                        <div class="stat-line"><i data-lucide="activity"></i> Status <strong id="status-label">Online</strong></div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="workspace panel">
+                <div class="tabs-bar">
+                    <div class="editor-tab"><i data-lucide="sparkles"></i> projects_active.lua</div>
+                </div>
+                <div class="content-viewport">
+                    <div class="content">
+                        
+                        <div class="hero-card reveal">
+                            <div class="eyebrow"><i data-lucide="code-2"></i> Architecture & Engineering</div>
+                            <h2>Clean execution, <span>production systems</span>.</h2>
+                            <p>An ecosystem of frameworks, game logic loops, and backend architectures crafted with strict type checking and highly optimized resource cycles.</p>
+                        </div>
+
+                        <div class="info-card reveal">
+                            <div class="label"><i data-lucide="folder-git-2"></i> Showcase Registry</div>
+
+                            <div class="feature-copy">
                                     <h3>Technical Showcase & Production Experience</h3>
                                     <div class="overview-grid">
                                         <div class="overview-stat">
@@ -20,3 +643,212 @@
                                     </div>
                                 </div>
                             </div>
+                            </div>
+
+                            <div class="project-grid" style="margin-top: 16px;">
+
+                                <div class="project-card">
+                                    <div class="project-media">
+                                        <video controls muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80">
+                                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    <div>
+                                        <div class="project-header">
+                                            <strong>Feather Framework</strong>
+                                            <i data-lucide="wind" style="color: var(--accent);"></i>
+                                        </div>
+                                        <p>A modular architecture package built to streamline workflow structure, state control, and production-ready Roblox systems.</p>
+                                    </div>
+                                    <div>
+                                        <div class="pill-row">
+                                            <span class="pill">Luau</span>
+                                            <span class="pill">OOP</span>
+                                            <span class="pill">Architecture</span>
+                                        </div>
+                                        <div class="project-actions">
+                                            <a href="https://nylonpixelated.github.io" class="project-btn" target="_blank"><i data-lucide="external-link"></i> Docs</a>
+                                            <a href="https://github.com/nylonpixelated" class="project-btn" target="_blank"><i data-lucide="github"></i> Source</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="project-media">
+                                        <video controls muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80">
+                                            <source src="https://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    <div>
+                                        <div class="project-header">
+                                            <strong>Slime Tower Defense</strong>
+                                            <i data-lucide="shield" style="color: var(--accent-2);"></i>
+                                        </div>
+                                        <p>A tactical defense experience focused on progression systems, scaling gameplay loops, and optimized backend coordination.</p>
+                                    </div>
+                                    <div>
+                                        <div class="pill-row">
+                                            <span class="pill">Luau</span>
+                                            <span class="pill">Datastores</span>
+                                            <span class="pill">Math</span>
+                                        </div>
+                                        <div class="project-actions">
+                                            <a href="https://www.roblox.com/users/3720760431/profile" class="project-btn" target="_blank"><i data-lucide="gamepad-2"></i> Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="project-media">
+                                        <video controls muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80">
+                                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    <div>
+                                        <div class="project-header">
+                                            <strong>Feed A Dragon</strong>
+                                            <i data-lucide="flame" style="color: #ef4444;"></i>
+                                        </div>
+                                        <p>Gameplay-first design with responsive UI movement, interactive loops, and polished action system structure tuned for replayability.</p>
+                                    </div>
+                                    <div>
+                                        <div class="pill-row">
+                                            <span class="pill">Luau</span>
+                                            <span class="pill">Tween Engine</span>
+                                            <span class="pill">UX</span>
+                                        </div>
+                                        <div class="project-actions">
+                                            <a href="https://www.roblox.com/users/3720760431/profile" class="project-btn" target="_blank"><i data-lucide="gamepad-2"></i> Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="project-card">
+                                    <div class="project-media">
+                                        <video controls muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?auto=format&fit=crop&w=1200&q=80">
+                                            <source src="https://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                    <div>
+                                        <div class="project-header">
+                                            <strong>Retribution RPG</strong>
+                                            <i data-lucide="swords" style="color: #f59e0b;"></i>
+                                        </div>
+                                        <p>Expanded combat logic and event-driven design, structured for fluid roleplay interaction and combat orchestration on a larger scale.</p>
+                                    </div>
+                                    <div>
+                                        <div class="pill-row">
+                                            <span class="pill">Luau</span>
+                                            <span class="pill">Raycasting</span>
+                                            <span class="pill">Networking</span>
+                                        </div>
+                                        <div class="project-actions">
+                                            <a href="https://www.roblox.com/users/3720760431/profile" class="project-btn" target="_blank"><i data-lucide="gamepad-2"></i> Profile</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const codeWords = [
+            'local Feather = {}',
+            'task.spawn()',
+            'require(module)',
+            'game:GetService',
+            'ModuleScript',
+            'repeat task.wait() until game:IsLoaded()',
+            'print("Hello World!")',
+            'Feather:featherInit()',
+            'renderStepped',
+            'networked event',
+            'typecheck()'
+        ];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.text = codeWords[Math.floor(Math.random() * codeWords.length)];
+                this.x = Math.random() * (canvas.width - 120) + 60;
+                this.y = Math.random() * (canvas.height - 120) + 60;
+                this.vx = (Math.random() - 0.5) * 0.35;
+                this.vy = (Math.random() - 0.5) * 0.35;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 40 || this.x > canvas.width - 40) this.vx *= -1;
+                if (this.y < 40 || this.y > canvas.height - 40) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(94, 234, 212, 0.08)';
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText(this.text, this.x, this.y);
+            }
+        }
+
+        function initParticles() {
+            particles = Array.from({ length: 22 }, () => new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch('https://api.lanyard.rest/v1/users/1005728136857649193');
+                const data = await response.json();
+                const status = data?.data?.discord_status;
+                const statusMap = {
+                    online: { label: 'Online', color: '#22c55e' },
+                    idle: { label: 'Idle', color: '#f59e0b' },
+                    dnd: { label: 'Do Not Disturb', color: '#ef4444' },
+                    offline: { label: 'Offline', color: '#9ca3af' }
+                };
+                const picked = statusMap[status] || statusMap.offline;
+                document.getElementById('status-label').textContent = picked.label;
+                document.querySelector('.status-dot').style.background = picked.color;
+                document.querySelector('.status-dot').style.boxShadow = `0 0 12px ${picked.color}`;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        initParticles();
+        animate();
+        lucide.createIcons();
+        
+        setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach((el, i) => {
+                setTimeout(() => el.classList.add('visible'), i * 70);
+            });
+        }, 20);
+
+        fetchStatus();
+    </script>
+</body>
+</html>
